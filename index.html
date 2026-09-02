@@ -91,6 +91,11 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3">
+                <button onclick="openWebmasterModal()" class="flex items-center gap-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-medium text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-sky-200 transition">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Webmaster SEO</span>
+                </button>
+
                 <button onclick="openModal('create')" class="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-pink-200 hover:shadow-pink-300 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Tambah Postingan</span>
@@ -176,6 +181,16 @@
                 <!-- Title & Meta -->
                 <div>
                     <h1 id="viewTitle" class="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">Title Placeholder</h1>
+                    
+                    <!-- URL Slug & Canonical Link Badge -->
+                    <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-pink-50 rounded-lg text-xs font-mono text-slate-600 border border-slate-200">
+                        <i data-lucide="link-2" class="w-3.5 h-3.5 text-pink-500"></i>
+                        <span id="viewSlugUrl" class="truncate max-w-xs sm:max-w-md">/post/slug-placeholder</span>
+                        <button onclick="copyPermalinkFromModal()" class="ml-2 text-pink-600 hover:text-pink-700 font-semibold underline flex items-center gap-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i> Salin URL
+                        </button>
+                    </div>
+
                     <div class="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-500 border-b border-slate-100 pb-4">
                         <span class="flex items-center gap-1.5"><i data-lucide="user" class="w-4 h-4 text-pink-500"></i> <span id="viewAuthor">Admin Toko</span></span>
                         <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-sky-500"></i> <span id="viewDate">01 Sep 2026</span></span>
@@ -231,8 +246,21 @@
                 <!-- Title Input -->
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Judul Postingan / Artikel *</label>
-                    <input type="text" id="postTitle" required placeholder="Contoh: Review Samsung S26 Ultra Kamera Monster" 
+                    <input type="text" id="postTitle" required oninput="autoGenerateSlug()" placeholder="Contoh: Review Samsung S26 Ultra Kamera Monster" 
                         class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+
+                <!-- Slug URL Input -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">
+                        URL Slug (SEO Webmaster) * 
+                        <span class="text-[10px] text-slate-400 font-normal">(Otomatis dibuat dari judul, ramah Google SEO)</span>
+                    </label>
+                    <div class="flex items-center">
+                        <span class="bg-slate-100 px-3 py-2.5 border border-r-0 border-slate-200 rounded-l-xl text-slate-500 text-xs font-mono">/post/</span>
+                        <input type="text" id="postSlug" required placeholder="review-samsung-s26-ultra-kamera-monster" 
+                            class="w-full px-4 py-2.5 rounded-r-xl border border-slate-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -292,6 +320,46 @@
         </div>
     </div>
 
+    <!-- Modal Webmaster SEO & Sitemap Helper -->
+    <div id="webmasterModal" class="fixed inset-0 z-50 hidden overflow-y-auto custom-scrollbar bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-sky-100">
+            <div class="bg-gradient-to-r from-sky-500 to-pink-500 p-6 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="globe" class="w-6 h-6"></i>
+                    <div>
+                        <h3 class="font-display font-bold text-lg">Google Webmaster & SEO Slug Helper</h3>
+                        <p class="text-xs text-pink-100">Daftar Slug URL untuk Indexing Search Engine & Sitemap</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('webmasterModal')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition">
+                    <i data-lucide="x" class="w-5 h-5 text-white"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs">
+                <p class="text-slate-600">Gunakan daftar URL dengan slug di bawah ini untuk didaftarkan ke <strong>Google Search Console</strong> atau generator Sitemap XML toko Anda:</p>
+                
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700">Daftar Permalink Artikel Saat Ini:</label>
+                    <textarea id="sitemapUrls" readonly rows="7" class="w-full font-mono text-[11px] p-3 rounded-xl bg-slate-900 text-sky-300 focus:outline-none custom-scrollbar"></textarea>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <span class="text-[11px] text-slate-400">Format URL disesuaikan dengan standar Slug SEO Web.</span>
+                    <button onclick="copySitemapToClipboard()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl flex items-center gap-1.5 transition">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Salin Semua URL
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>
+        <span id="toastMsg">Berhasil menyalin link permalink!</span>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-white/80 backdrop-blur-md border-t border-pink-100 mt-16 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
@@ -312,10 +380,11 @@
     </footer>
 
     <script>
-        // 3 Sample Default Handphone Store Blog Posts
+        // 3 Sample Default Handphone Store Blog Posts with SEO Slugs
         const defaultPosts = [
             {
                 id: "post-1",
+                slug: "review-flagship-2026-smartphone-camera-monster-1-inci",
                 title: "Review Flagship 2026: Smartphone Camera Monster dengan Sensor 1-Inci & AI Telephoto",
                 category: "Review",
                 author: "Admin Store",
@@ -339,6 +408,7 @@
             },
             {
                 id: "post-2",
+                slug: "5-tips-ampuh-merawat-baterai-smartphone-awet-4-tahun",
                 title: "5 Tips Ampuh Merawat Baterai Smartphone Agar Awet Hingga 4 Tahun (Panduan Teknisi)",
                 category: "Tips",
                 author: "Teknisi GigaMobile",
@@ -361,6 +431,7 @@
             },
             {
                 id: "post-3",
+                slug: "rekomendasi-hp-2-jutaan-terbaik-2026-amoled-120hz-nfc",
                 title: "Rekomendasi HP 2 Jutaan Terbaik 2026: Layar AMOLED 120Hz & NFC Untuk Daily Use",
                 category: "Rekomendasi",
                 author: "Sales Advisor",
@@ -388,13 +459,38 @@
         // App State
         let posts = [];
         let currentFilter = 'all';
+        let currentOpenPostSlug = null;
 
-        // Initialize App
+        // Helper function to create clean slug string
+        function createSlugFromString(text) {
+            return text
+                .toString()
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
+
+        // Auto generate slug in form input
+        function autoGenerateSlug() {
+            const titleInput = document.getElementById('postTitle').value;
+            const slugInput = document.getElementById('postSlug');
+            slugInput.value = createSlugFromString(titleInput);
+        }
+
+        // Initialize App & Handle Hash Navigation (SEO Routing)
         function initApp() {
             const savedPosts = localStorage.getItem('gigamobile_blog_posts');
             if (savedPosts) {
                 try {
                     posts = JSON.parse(savedPosts);
+                    // Ensure existing posts have slug
+                    posts.forEach((p, idx) => {
+                        if (!p.slug) p.slug = createSlugFromString(p.title) || `post-${idx + 1}`;
+                    });
                 } catch(e) {
                     posts = [...defaultPosts];
                 }
@@ -402,13 +498,40 @@
                 posts = [...defaultPosts];
                 saveToLocalStorage();
             }
+
             renderPosts();
             lucide.createIcons();
+
+            // Check URL hash for direct post routing (e.g. #post/slug-name)
+            handleHashRouting();
+            window.addEventListener('hashchange', handleHashRouting);
+        }
+
+        // Handle URL Hash Navigation for SEO Direct Link
+        function handleHashRouting() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#post/')) {
+                const slug = hash.replace('#post/', '');
+                const targetPost = posts.find(p => p.slug === slug);
+                if (targetPost) {
+                    openViewModal(targetPost.id, false); // open without changing hash again
+                }
+            }
         }
 
         // Save State to LocalStorage
         function saveToLocalStorage() {
             localStorage.setItem('gigamobile_blog_posts', JSON.stringify(posts));
+        }
+
+        // Toast message banner
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
         }
 
         // Reset Default Posts
@@ -417,6 +540,7 @@
                 posts = [...defaultPosts];
                 saveToLocalStorage();
                 renderPosts();
+                showToast('Postingan default berhasil dipulihkan!');
             }
         }
 
@@ -430,6 +554,7 @@
             const filteredPosts = posts.filter(post => {
                 const matchesCategory = (currentFilter === 'all') || (post.category.toLowerCase() === currentFilter.toLowerCase());
                 const matchesSearch = post.title.toLowerCase().includes(searchInput) || 
+                                      post.slug.toLowerCase().includes(searchInput) ||
                                       post.excerpt.toLowerCase().includes(searchInput) || 
                                       post.content.toLowerCase().includes(searchInput);
                 return matchesCategory && matchesSearch;
@@ -465,7 +590,7 @@
                     <!-- Post Body Area (100% Width Layout) -->
                     <div class="p-6 sm:p-8 space-y-4">
                         <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2 border-b border-pink-50 pb-3">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-3 flex-wrap">
                                 <span class="font-medium text-slate-600 flex items-center gap-1">
                                     <i data-lucide="user" class="w-3.5 h-3.5 text-pink-500"></i> ${post.author || 'Admin'}
                                 </span>
@@ -473,10 +598,18 @@
                                 <span class="flex items-center gap-1">
                                     <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-500"></i> ${post.date}
                                 </span>
+                                <span>&bull;</span>
+                                <!-- Slug Badge -->
+                                <span class="font-mono text-[11px] text-pink-500 bg-pink-50 px-2 py-0.5 rounded flex items-center gap-1" title="SEO URL Slug">
+                                    <i data-lucide="link" class="w-3 h-3"></i> /post/${post.slug}
+                                </span>
                             </div>
 
                             <!-- Edit & Delete Action Buttons -->
                             <div class="flex items-center gap-2">
+                                <button onclick="copyPostPermalink('${post.slug}')" class="p-1.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition" title="Salin Permalink Post">
+                                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                                </button>
                                 <button onclick="openModal('edit', '${post.id}')" class="p-1.5 text-slate-400 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition" title="Edit Post">
                                     <i data-lucide="edit-2" class="w-4 h-4"></i>
                                 </button>
@@ -495,10 +628,13 @@
                             ${post.excerpt}
                         </p>
 
-                        <!-- Read Full Article Button -->
+                        <!-- Read Full Article Button & Copy Slug Link -->
                         <div class="pt-2 flex items-center justify-between">
                             <button onclick="openViewModal('${post.id}')" class="inline-flex items-center gap-2 font-bold text-xs sm:text-sm text-pink-600 hover:text-pink-700 transition">
                                 Baca Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="copyPostPermalink('${post.slug}')" class="text-xs text-slate-500 hover:text-pink-600 flex items-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin URL
                             </button>
                         </div>
                     </div>
@@ -506,6 +642,46 @@
             `).join('');
 
             lucide.createIcons();
+        }
+
+        // Copy Permalink handler
+        function copyPostPermalink(slug) {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const fullPermalink = `${baseUrl}#post/${slug}`;
+            
+            // Clipboard copy fallbacks
+            const tempInput = document.createElement("input");
+            tempInput.value = fullPermalink;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast(`URL Permalink disalin: #post/${slug}`);
+        }
+
+        function copyPermalinkFromModal() {
+            if (currentOpenPostSlug) {
+                copyPostPermalink(currentOpenPostSlug);
+            }
+        }
+
+        // Open Webmaster / Sitemap Generator Modal
+        function openWebmasterModal() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const sitemapText = posts.map(p => `${baseUrl}#post/${p.slug}`).join('\n');
+            document.getElementById('sitemapUrls').value = sitemapText;
+
+            document.getElementById('webmasterModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function copySitemapToClipboard() {
+            const textarea = document.getElementById('sitemapUrls');
+            textarea.select();
+            document.execCommand("copy");
+            showToast("Semua URL Slug berhasil disalin untuk Search Console!");
         }
 
         // Filter Category Handler
@@ -527,16 +703,23 @@
         }
 
         // Open Single Post Full View
-        function openViewModal(id) {
+        function openViewModal(id, updateHash = true) {
             const post = posts.find(p => p.id === id);
             if (!post) return;
 
+            currentOpenPostSlug = post.slug;
             document.getElementById('viewTitle').innerText = post.title;
             document.getElementById('viewCategory').innerText = post.category;
             document.getElementById('viewAuthor').innerText = post.author || 'Admin Store';
             document.getElementById('viewDate').innerText = post.date;
             document.getElementById('viewImage').src = post.image;
             document.getElementById('viewContent').innerHTML = post.content;
+            document.getElementById('viewSlugUrl').innerText = `/post/${post.slug}`;
+
+            // Update Browser URL Hash for indexing / direct share
+            if (updateHash) {
+                window.location.hash = `post/${post.slug}`;
+            }
 
             // Video Handler
             const videoContainer = document.getElementById('viewVideoContainer');
@@ -569,12 +752,13 @@
                     modalTitle.innerText = "Edit Postingan Blog";
                     document.getElementById('postId').value = post.id;
                     document.getElementById('postTitle').value = post.title;
+                    document.getElementById('postSlug').value = post.slug || createSlugFromString(post.title);
                     document.getElementById('postCategory').value = post.category;
                     document.getElementById('postAuthor').value = post.author;
                     document.getElementById('postImage').value = post.image;
                     document.getElementById('postVideo').value = post.video || '';
                     document.getElementById('postExcerpt').value = post.excerpt;
-                    document.getElementById('postContent').value = post.content.replace(/<[^>]*>?/gm, ''); // simple clean text for textarea
+                    document.getElementById('postContent').value = post.content.replace(/<[^>]*>?/gm, ''); // clean text for textarea
                 }
             } else {
                 modalTitle.innerText = "Tambah Postingan Baru";
@@ -591,6 +775,8 @@
             document.body.style.overflow = 'auto';
             if(modalId === 'viewModal') {
                 document.getElementById('viewIframe').src = "";
+                // Remove post hash without reloading page
+                history.pushState("", document.title, window.location.pathname + window.location.search);
             }
         }
 
@@ -600,6 +786,8 @@
 
             const id = document.getElementById('postId').value;
             const title = document.getElementById('postTitle').value;
+            const rawSlug = document.getElementById('postSlug').value;
+            const slug = createSlugFromString(rawSlug || title);
             const category = document.getElementById('postCategory').value;
             const author = document.getElementById('postAuthor').value || 'Admin Toko';
             const image = document.getElementById('postImage').value;
@@ -620,6 +808,7 @@
                     posts[index] = {
                         ...posts[index],
                         title,
+                        slug,
                         category,
                         author,
                         image,
@@ -633,6 +822,7 @@
                 const newPost = {
                     id: 'post-' + Date.now(),
                     title,
+                    slug,
                     category,
                     author,
                     date: dateStr,
@@ -647,6 +837,7 @@
             saveToLocalStorage();
             renderPosts();
             closeModal('formModal');
+            showToast('Postingan & Slug SEO berhasil disimpan!');
         }
 
         // Delete Post Handler
@@ -655,6 +846,7 @@
                 posts = posts.filter(p => p.id !== id);
                 saveToLocalStorage();
                 renderPosts();
+                showToast('Postingan berhasil dihapus!');
             }
         }
 
