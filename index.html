@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGadget Journal - Blog Toko Handphone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        skypink: {
+                            50: '#fff5f8',
+                            100: '#ffeaf2',
+                            200: '#ffd4e5',
+                            300: '#fbaacb',
+                            400: '#f773a4',
+                            500: '#ef4482',
+                            bg: '#faeef4'
+                        },
+                        skyaccent: {
+                            100: '#e0f2fe',
+                            300: '#7dd3fc',
+                            500: '#0ea5e9',
+                            600: '#0284c7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            /* Warna Background Sky-Pink Pastel Gradient */
+            background: linear-gradient(135deg, #fceef5 0%, #e0f2fe 50%, #fde8f0 100%);
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-panel shadow-sm border-b border-pink-100/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="filterPosts('all')">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-400 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-pink-200">
+                    <i data-lucide="smartphone" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-xl tracking-tight bg-gradient-to-r from-pink-600 to-sky-600 bg-clip-text text-transparent">GigaMobile</span>
+                    <span class="block text-xs font-semibold uppercase tracking-widest text-slate-500">Official Tech Blog</span>
+                </div>
+            </div>
+
+            <!-- Quick Category Tags (Desktop) -->
+            <nav class="hidden md:flex items-center gap-2 bg-white/70 p-1.5 rounded-full border border-pink-100 shadow-inner">
+                <button onclick="filterPosts('all')" class="cat-btn active text-xs font-medium px-4 py-2 rounded-full transition-all bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-md">Semua</button>
+                <button onclick="filterPosts('Review')" class="cat-btn text-xs font-medium px-4 py-2 rounded-full text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-all">Review HP</button>
+                <button onclick="filterPosts('Tips')" class="cat-btn text-xs font-medium px-4 py-2 rounded-full text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-all">Tips & Trik</button>
+                <button onclick="filterPosts('Rekomendasi')" class="cat-btn text-xs font-medium px-4 py-2 rounded-full text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-all">Rekomendasi</button>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('create')" class="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-pink-200 hover:shadow-pink-300 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Tambah Postingan</span>
+                    <span class="sm:hidden">Baru</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero / Store Announcement Banner -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-pink-500 via-rose-400 to-sky-500 p-6 sm:p-8 text-white shadow-xl">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="max-w-2xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold tracking-wide uppercase text-white mb-3">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-yellow-300"></i>
+                        Portal Berita & Edukasi Smartphone
+                    </span>
+                    <h1 class="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Katalog Gadget & Review Terpercaya Toko Kami</h1>
+                    <p class="mt-2 text-pink-50 text-xs sm:text-sm leading-relaxed">
+                        Temukan ulasan mendalam, komparasi harga, serta tips perawatan smartphone langsung dari teknisi & tim ahli toko kami!
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="#posts-container" class="inline-flex items-center gap-2 bg-white text-pink-600 font-semibold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md hover:bg-pink-50 transition-all">
+                        Eksplor Artikel <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+
+        <!-- Search & Control Header -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">
+            <div class="relative flex-1 max-w-md">
+                <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Cari artikel, HP, atau tips..." 
+                    class="w-full pl-11 pr-4 py-2.5 rounded-2xl border border-pink-200/80 bg-white/90 backdrop-blur-sm text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all shadow-sm">
+            </div>
+            
+            <div class="flex items-center justify-between sm:justify-end gap-3 text-xs text-slate-500">
+                <span id="postCount" class="font-semibold text-pink-600">Menampilkan 3 Artikel</span>
+                <button onclick="resetDefaultPosts()" class="hover:text-pink-600 underline flex items-center gap-1">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Default
+                </button>
+            </div>
+        </div>
+
+        <!-- Blog Posts Grid / List Container -->
+        <div id="posts-container" class="space-y-12">
+            <!-- Dynamic Post Cards loaded by JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-16 bg-white/60 backdrop-blur-md rounded-3xl border border-dashed border-pink-300">
+            <div class="w-16 h-16 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="file-question" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-700">Belum ada postingan ditemukan</h3>
+            <p class="text-xs text-slate-500 mt-1">Coba kata kunci lain atau tambahkan postingan baru.</p>
+            <button onclick="openModal('create')" class="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl text-xs font-semibold hover:bg-pink-600 transition">
+                + Buat Postingan Sekarang
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal View Single Post (Full Width Reader View) -->
+    <div id="viewModal" class="fixed inset-0 z-50 hidden overflow-y-auto custom-scrollbar bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl relative border border-pink-100">
+            <!-- Sticky Close Header -->
+            <div class="sticky top-0 right-0 z-20 bg-white/90 backdrop-blur-md px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <span id="viewCategory" class="px-3 py-1 bg-pink-100 text-pink-600 text-xs font-bold rounded-full">Review</span>
+                <button onclick="closeModal('viewModal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-pink-100 hover:text-pink-600 flex items-center justify-center transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 sm:p-10 space-y-6">
+                <!-- Title & Meta -->
+                <div>
+                    <h1 id="viewTitle" class="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">Title Placeholder</h1>
+                    <div class="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-500 border-b border-slate-100 pb-4">
+                        <span class="flex items-center gap-1.5"><i data-lucide="user" class="w-4 h-4 text-pink-500"></i> <span id="viewAuthor">Admin Toko</span></span>
+                        <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-sky-500"></i> <span id="viewDate">01 Sep 2026</span></span>
+                        <span class="flex items-center gap-1.5"><i data-lucide="tag" class="w-4 h-4 text-rose-400"></i> <span id="viewPrice">Garansi Resmi</span></span>
+                    </div>
+                </div>
+
+                <!-- 100% Width Image / Media Area -->
+                <div class="w-full rounded-2xl overflow-hidden shadow-lg bg-slate-900">
+                    <img id="viewImage" class="w-full h-[300px] sm:h-[450px] object-cover" src="" alt="Post Banner">
+                </div>
+
+                <!-- Video Embed Container (If Video URL Exists) -->
+                <div id="viewVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden shadow-md bg-black">
+                    <iframe id="viewIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <!-- 100% Width Post Content Text -->
+                <div id="viewContent" class="w-full prose prose-pink max-w-none text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
+                    <!-- Text Content Inserted via JS -->
+                </div>
+
+                <!-- Call to Action Footer inside Post View -->
+                <div class="w-full p-6 rounded-2xl bg-gradient-to-r from-pink-500 to-sky-500 text-white mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+                    <div>
+                        <h4 class="font-bold text-lg">Tertarik dengan produk di artikel ini?</h4>
+                        <p class="text-xs text-pink-100">Dapatkan promo cashback & gratis ongkir pengiriman ke seluruh Indonesia!</p>
+                    </div>
+                    <a href="https://wa.me/?text=Halo%20Toko,%20saya%20tertarik%20dengan%20produk%20di%20blog" target="_blank" class="w-full sm:w-auto text-center px-6 py-3 bg-white text-pink-600 hover:bg-pink-50 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition">
+                        Hubungi Sales WA <i data-lucide="message-square" class="w-4 h-4 inline-block ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Create / Edit Post Form -->
+    <div id="formModal" class="fixed inset-0 z-50 hidden overflow-y-auto custom-scrollbar bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-pink-100">
+            <div class="bg-gradient-to-r from-pink-500 to-rose-400 p-6 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-6 h-6"></i>
+                    <h3 id="formModalTitle" class="font-display font-bold text-xl">Tambah Postingan Baru</h3>
+                </div>
+                <button onclick="closeModal('formModal')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition">
+                    <i data-lucide="x" class="w-5 h-5 text-white"></i>
+                </button>
+            </div>
+
+            <form id="postForm" onsubmit="handleFormSubmit(event)" class="p-6 sm:p-8 space-y-4 text-xs sm:text-sm">
+                <input type="hidden" id="postId">
+
+                <!-- Title Input -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Judul Postingan / Artikel *</label>
+                    <input type="text" id="postTitle" required placeholder="Contoh: Review Samsung S26 Ultra Kamera Monster" 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Category Selection -->
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Kategori *</label>
+                        <select id="postCategory" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white">
+                            <option value="Review">Review HP</option>
+                            <option value="Tips">Tips & Trik</option>
+                            <option value="Rekomendasi">Rekomendasi</option>
+                            <option value="Promo">Promo Store</option>
+                        </select>
+                    </div>
+
+                    <!-- Author Input -->
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Penulis / Tim Toko</label>
+                        <input type="text" id="postAuthor" placeholder="Misal: Tim Gadget Toko" 
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                </div>
+
+                <!-- Media Input URLs -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">URL Gambar Header (Lebar 100%) *</label>
+                    <input type="url" id="postImage" required placeholder="https://images.unsplash.com/photo-..." 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">URL Embed Video Youtube (Opsional)</label>
+                    <input type="url" id="postVideo" placeholder="https://www.youtube.com/embed/XXXXX" 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <span class="text-[10px] text-slate-400 mt-0.5 block">Format embed: https://www.youtube.com/embed/VIDEO_ID</span>
+                </div>
+
+                <!-- Short Excerpt -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Ringkasan Singkat (Excerpt) *</label>
+                    <input type="text" id="postExcerpt" required placeholder="Ringkasan 1-2 kalimat untuk kartu postingan..." 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+
+                <!-- Content Area -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Isi Konten Postingan (Paragraf/Deskripsi Lengkap) *</label>
+                    <textarea id="postContent" rows="6" required placeholder="Tulis ulasan detail, spesifikasi HP, kelebihan, kekurangan..." 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-400 custom-scrollbar"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('formModal')" class="px-5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold shadow-md hover:from-pink-600 hover:to-rose-600 transition">Simpan Postingan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 backdrop-blur-md border-t border-pink-100 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-pink-500 flex items-center justify-center text-white">
+                    <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                </div>
+                <span class="font-bold text-slate-700">GigaMobile Store & Blog</span> &copy; 2026. Hak Cipta Dilindungi.
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-pink-600 cursor-pointer">Garansi Resmi</span>
+                <span>&bull;</span>
+                <span class="hover:text-pink-600 cursor-pointer">Layanan Service</span>
+                <span>&bull;</span>
+                <span class="hover:text-pink-600 cursor-pointer">Konsultasi WA Gratis</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 3 Sample Default Handphone Store Blog Posts
+        const defaultPosts = [
+            {
+                id: "post-1",
+                title: "Review Flagship 2026: Smartphone Camera Monster dengan Sensor 1-Inci & AI Telephoto",
+                category: "Review",
+                author: "Admin Store",
+                date: "28 Agu 2026",
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop",
+                video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                excerpt: "Ulasan mendalam kamera flagship terbaru ber-sensor 1-inci yang tersedia di toko kami. Hasil jepretan malam hari luar biasa jernih!",
+                content: `
+                <p>Pasar smartphone flagship tahun 2026 semakin memanas dengan hadirnya lini kamera bersensor besar 1-inci yang dipadukan dengan pemrosesan ISP berbasis Artificial Intelligence (AI). Tim toko kami berkesempatan melakukan uji coba lapangan secara komprehensif selama 2 minggu penuh.</p>
+
+                <h3 class="text-lg font-bold text-pink-600 mt-4">Kelebihan Utama yang Kami Temukan:</h3>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><strong>Dynamic Range Ekstrem:</strong> Pengambilan gambar backlight kini tidak lagi menyisakan area over-exposure.</li>
+                    <li><strong>Portrait Bokeh Alami:</strong> Depth of field dihasilkan secara optik hardware tanpa artefak potongan rambut yang kasar.</li>
+                    <li><strong>Pengisian Daya Super Fast Charge 120W:</strong> Mengisi daya dari 0% ke 100% hanya membutuhkan waktu kurang dari 19 menit.</li>
+                </ul>
+
+                <h3 class="text-lg font-bold text-pink-600 mt-4">Kesimpulan & Rekomendasi Toko:</h3>
+                <p>Bagi Anda yang menyukai fotografi HP profesional atau penggiat konten TikTok & Reels, smartphone ini adalah investasi sempurna. Unit garansi resmi toko kami siap diorder lengkap dengan bonus charger adapter original.</p>
+                `
+            },
+            {
+                id: "post-2",
+                title: "5 Tips Ampuh Merawat Baterai Smartphone Agar Awet Hingga 4 Tahun (Panduan Teknisi)",
+                category: "Tips",
+                author: "Teknisi GigaMobile",
+                date: "30 Agu 2026",
+                image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=1200&auto=format&fit=crop",
+                video: "",
+                excerpt: "Jangan tunggu baterai HP kamu kembung atau bocor! Simak 5 kebiasaan sepele yang bisa membuat umur baterai tahan lama.",
+                content: `
+                <p>Salah satu keluhan pelanggan yang paling sering mendatangi counter service toko kami adalah masalah kesehatan baterai (battery health) yang turun drastis dalam kurun waktu kurang dari 1 tahun. Sebenarnya, penurunan kualitas baterai Lithium-Ion bisa ditekan dengan perawatan yang benar.</p>
+
+                <h3 class="text-lg font-bold text-slate-800 mt-4">1. Hindari Pengisian Daya Hingga 100% Semalaman</h3>
+                <p>Membiarkan HP terhubung ke charger saat tidur memicu tegangan mikro konstan. Gunakan fitur <em>Smart Battery Protection</em> di menu pengaturan HP Anda agar pengisian otomatis berhenti di angka 80%.</p>
+
+                <h3 class="text-lg font-bold text-slate-800 mt-4">2. Jangan Gunakan HP Saat Sedang Di-charge (Terutama Gaming)</h3>
+                <p>Suhu panas berlebih adalah musuh utama sel baterai. Memainkan game berat sewaktu nge-cas menghasilkan akumulasi panas ganda dari chipset dan daya listrik.</p>
+
+                <h3 class="text-lg font-bold text-slate-800 mt-4">3. Gunakan Charger Original Bergaransi</h3>
+                <p>Charger rakitan tanpa standar proteksi voltase dapat menyebabkan arus pendek dan merusak IC Power motherboard HP Anda. Dapatkan adaptor original bergaransi resmi di toko kami!</p>
+                `
+            },
+            {
+                id: "post-3",
+                title: "Rekomendasi HP 2 Jutaan Terbaik 2026: Layar AMOLED 120Hz & NFC Untuk Daily Use",
+                category: "Rekomendasi",
+                author: "Sales Advisor",
+                date: "01 Sep 2026",
+                image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=1200&auto=format&fit=crop",
+                video: "",
+                excerpt: "Punya budget 2 jutaan tapi ingin spek rasa flagship? Ini dia 3 kandidat HP terlaris di toko kami bulan ini!",
+                content: `
+                <p>Siapa bilang HP harga 2 jutaan punya kualitas seadanya? Di tahun 2026, standar HP entry-level sudah mengalami lompatan teknologi yang sangat pesat. Kini Anda sudah bisa menikmati layar AMOLED tajam dengan refresh rate 120Hz yang sangat mulus.</p>
+
+                <div class="p-4 bg-pink-50 border-l-4 border-pink-500 rounded-r-xl my-4">
+                    <strong class="text-pink-700">Fitur Wajib HP 2 Jutaan Pilihan Toko Kami:</strong>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm">
+                        <li>Fitur NFC untuk kemudahan top-up e-money & transaksi.</li>
+                        <li>Memori Internal minimal 128GB / 256GB UFS 2.2.</li>
+                        <li>Dukungan Update OS Android minimal 2 kali generasi.</li>
+                    </ul>
+                </div>
+
+                <p>Kunjungi toko fisik kami atau hubungi Customer Service online untuk mendapatkan penawaran promo bundling tempered glass gratis & casing pelindung!</p>
+                `
+            }
+        ];
+
+        // App State
+        let posts = [];
+        let currentFilter = 'all';
+
+        // Initialize App
+        function initApp() {
+            const savedPosts = localStorage.getItem('gigamobile_blog_posts');
+            if (savedPosts) {
+                try {
+                    posts = JSON.parse(savedPosts);
+                } catch(e) {
+                    posts = [...defaultPosts];
+                }
+            } else {
+                posts = [...defaultPosts];
+                saveToLocalStorage();
+            }
+            renderPosts();
+            lucide.createIcons();
+        }
+
+        // Save State to LocalStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('gigamobile_blog_posts', JSON.stringify(posts));
+        }
+
+        // Reset Default Posts
+        function resetDefaultPosts() {
+            if(confirm('Apakah Anda yakin ingin mengembalikan 3 postingan contoh default? Data postingan baru akan terreset.')) {
+                posts = [...defaultPosts];
+                saveToLocalStorage();
+                renderPosts();
+            }
+        }
+
+        // Render Posts to Main Feed
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            const emptyState = document.getElementById('empty-state');
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+            // Filter logic
+            const filteredPosts = posts.filter(post => {
+                const matchesCategory = (currentFilter === 'all') || (post.category.toLowerCase() === currentFilter.toLowerCase());
+                const matchesSearch = post.title.toLowerCase().includes(searchInput) || 
+                                      post.excerpt.toLowerCase().includes(searchInput) || 
+                                      post.content.toLowerCase().includes(searchInput);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Count label
+            document.getElementById('postCount').innerText = `Menampilkan ${filteredPosts.length} Artikel`;
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // HTML Generator (Each Post Layout 100% width media & content)
+            container.innerHTML = filteredPosts.map(post => `
+                <article class="glass-panel rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-pink-100/90 group flex flex-col">
+                    <!-- 100% Width Image Cover in Post Area -->
+                    <div class="relative w-full h-64 sm:h-80 md:h-[400px] bg-slate-100 overflow-hidden cursor-pointer" onclick="openViewModal('${post.id}')">
+                        <img src="${post.image}" alt="${post.title}" 
+                            onerror="this.src='https://placehold.co/1200x600/fecdd3/881337?text=Gambar+HP+Toko'"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-pink-600 font-bold text-xs shadow-md">
+                                ${post.category}
+                            </span>
+                            ${post.video ? `<span class="px-3.5 py-1.5 rounded-full bg-red-600/90 backdrop-blur-md text-white font-bold text-xs shadow-md flex items-center gap-1"><i data-lucide="play" class="w-3 h-3"></i> Video Review</span>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Post Body Area (100% Width Layout) -->
+                    <div class="p-6 sm:p-8 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2 border-b border-pink-50 pb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="font-medium text-slate-600 flex items-center gap-1">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-pink-500"></i> ${post.author || 'Admin'}
+                                </span>
+                                <span>&bull;</span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-500"></i> ${post.date}
+                                </span>
+                            </div>
+
+                            <!-- Edit & Delete Action Buttons -->
+                            <div class="flex items-center gap-2">
+                                <button onclick="openModal('edit', '${post.id}')" class="p-1.5 text-slate-400 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition" title="Edit Post">
+                                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="deletePost('${post.id}')" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Post">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 100% Width Title & Excerpt -->
+                        <h2 onclick="openViewModal('${post.id}')" class="font-display font-bold text-xl sm:text-2xl text-slate-900 hover:text-pink-600 cursor-pointer transition-colors leading-snug">
+                            ${post.title}
+                        </h2>
+                        
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-3">
+                            ${post.excerpt}
+                        </p>
+
+                        <!-- Read Full Article Button -->
+                        <div class="pt-2 flex items-center justify-between">
+                            <button onclick="openViewModal('${post.id}')" class="inline-flex items-center gap-2 font-bold text-xs sm:text-sm text-pink-600 hover:text-pink-700 transition">
+                                Baca Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Filter Category Handler
+        function filterPosts(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if(btn.innerText.toLowerCase().includes(cat.toLowerCase()) || (cat === 'all' && btn.innerText === 'Semua')) {
+                    btn.className = "cat-btn active text-xs font-medium px-4 py-2 rounded-full transition-all bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-md";
+                } else {
+                    btn.className = "cat-btn text-xs font-medium px-4 py-2 rounded-full text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-all";
+                }
+            });
+            renderPosts();
+        }
+
+        // Live Search Handler
+        function handleSearch() {
+            renderPosts();
+        }
+
+        // Open Single Post Full View
+        function openViewModal(id) {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('viewTitle').innerText = post.title;
+            document.getElementById('viewCategory').innerText = post.category;
+            document.getElementById('viewAuthor').innerText = post.author || 'Admin Store';
+            document.getElementById('viewDate').innerText = post.date;
+            document.getElementById('viewImage').src = post.image;
+            document.getElementById('viewContent').innerHTML = post.content;
+
+            // Video Handler
+            const videoContainer = document.getElementById('viewVideoContainer');
+            const iframe = document.getElementById('viewIframe');
+            if (post.video && post.video.trim() !== "") {
+                iframe.src = post.video;
+                videoContainer.classList.remove('hidden');
+            } else {
+                iframe.src = "";
+                videoContainer.classList.add('hidden');
+            }
+
+            document.getElementById('viewModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        // Open Form Modal (Create or Edit)
+        function openModal(mode, id = null) {
+            const modal = document.getElementById('formModal');
+            const form = document.getElementById('postForm');
+            const modalTitle = document.getElementById('formModalTitle');
+
+            form.reset();
+            document.getElementById('postId').value = '';
+
+            if (mode === 'edit' && id) {
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    modalTitle.innerText = "Edit Postingan Blog";
+                    document.getElementById('postId').value = post.id;
+                    document.getElementById('postTitle').value = post.title;
+                    document.getElementById('postCategory').value = post.category;
+                    document.getElementById('postAuthor').value = post.author;
+                    document.getElementById('postImage').value = post.image;
+                    document.getElementById('postVideo').value = post.video || '';
+                    document.getElementById('postExcerpt').value = post.excerpt;
+                    document.getElementById('postContent').value = post.content.replace(/<[^>]*>?/gm, ''); // simple clean text for textarea
+                }
+            } else {
+                modalTitle.innerText = "Tambah Postingan Baru";
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            if(modalId === 'viewModal') {
+                document.getElementById('viewIframe').src = "";
+            }
+        }
+
+        // Submit Form Handler (Add or Update)
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('postId').value;
+            const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
+            const author = document.getElementById('postAuthor').value || 'Admin Toko';
+            const image = document.getElementById('postImage').value;
+            const video = document.getElementById('postVideo').value;
+            const excerpt = document.getElementById('postExcerpt').value;
+            const contentRaw = document.getElementById('postContent').value;
+            
+            // Format linebreaks into paragraphs for rich text feel
+            const contentFormatted = contentRaw.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            if (id) {
+                // Update Existing
+                const index = posts.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    posts[index] = {
+                        ...posts[index],
+                        title,
+                        category,
+                        author,
+                        image,
+                        video,
+                        excerpt,
+                        content: contentFormatted
+                    };
+                }
+            } else {
+                // Add New
+                const newPost = {
+                    id: 'post-' + Date.now(),
+                    title,
+                    category,
+                    author,
+                    date: dateStr,
+                    image,
+                    video,
+                    excerpt,
+                    content: contentFormatted
+                };
+                posts.unshift(newPost);
+            }
+
+            saveToLocalStorage();
+            renderPosts();
+            closeModal('formModal');
+        }
+
+        // Delete Post Handler
+        function deletePost(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus postingan ini?')) {
+                posts = posts.filter(p => p.id !== id);
+                saveToLocalStorage();
+                renderPosts();
+            }
+        }
+
+        // Initialize App on window load
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
